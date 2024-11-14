@@ -1,5 +1,3 @@
-// src/todo/entities/todo.entity.ts
-
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 import { StatusEnum } from '../enums/status.enum';
 import { BaseEntity } from '../../common-module/entities/base.entity';

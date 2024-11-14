@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Not, Repository} from 'typeorm';
+import {IsNull, Not, Repository} from 'typeorm';
 import { TodoEntity } from './entities/todo.entity';
 import { StatusEnum } from './enums/status.enum';
 import {CreateTodoDto} from "./dto/create-todo.tdo";
@@ -49,7 +49,8 @@ export class TodoService {
 
     async restoreTodo(id: number): Promise<TodoEntity> {
         const todo = await this.todoRepository.findOne({
-            where: { id, deletedAt: Not(null) },
+            where: { id, deletedAt: Not(IsNull()) },
+            withDeleted: true,        // Else the deleted todos won't show up
         });
 
         if (!todo) {
@@ -63,8 +64,9 @@ export class TodoService {
     async countTodosByStatus(): Promise<{ [key in StatusEnum]: number }> {
         const todos = await this.todoRepository
             .createQueryBuilder('todo')
-            .select('todo.status')
+            .select('todo.status', 'status')  // Rename to fix error
             .addSelect('COUNT(todo.id)', 'count')
+            .where('todo.deletedAt IS NULL')
             .groupBy('todo.status')
             .getRawMany();
 
@@ -75,11 +77,12 @@ export class TodoService {
         };
 
         todos.forEach((todo) => {
-            result[todo.status] = +todo.count;
+            result[todo.status as StatusEnum] = Number(todo.count);
         });
 
         return result;
     }
+
 
     // no pagination
     // async getAllTodos(): Promise<TodoEntity[]> {

@@ -209,11 +209,11 @@ GET http://127.0.0.1:3000/todos/filter?name=NestJS&status=PENDING
 
 ---
 
-### 8. **Obtenir le nombre de Todos par statut (GET /todos/status-count)**
+### 8. **Obtenir le nombre de Todos par statut (GET /todos/count-by-status)**
 
 #### URL :
 ```
-GET http://127.0.0.1:3000/todos/status-count
+GET http://127.0.0.1:3000/todos/count-by-status
 ```
 
 #### Réponse attendue (Exemple) :
