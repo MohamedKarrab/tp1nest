@@ -172,21 +172,17 @@ PUT http://127.0.0.1:3000/todos/restore/1/
 
 ---
 
-### 7. **Récupérer les Todos filtrés par `name`, `description` et `status` (GET /todos/filter)**
+### 7. **Récupérer les Todos filtrés par `name`, `description` et `status` (GET /todos/search)**
 
 #### URL :
 ```
-GET http://127.0.0.1:3000/todos/filter?name=NestJS&status=PENDING
+GET http://127.0.0.1:3000/todos/search?text=NestJS&status=PENDING
 ```
 
-#### Paramètres de requête (optionnels) :
-- **name** : chaîne à rechercher dans le champ `name`
-- **description** : chaîne à rechercher dans le champ `description`
-- **status** : statut à filtrer (`PENDING`, `COMPLETED`, etc.)
 
 Exemple de requête :
 ```
-GET http://127.0.0.1:3000/todos/filter?name=NestJS&status=PENDING
+GET http://127.0.0.1:3000/todos/search?text=NestJS&status=PENDING
 ```
 
 #### Réponse attendue (Exemple) :
