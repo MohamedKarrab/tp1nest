@@ -150,11 +150,11 @@ DELETE http://127.0.0.1:3000/todos/1
 
 ---
 
-### 6. **Restaurer un Todo supprimé (PATCH /todos/:id/restore)**
+### 6. **Restaurer un Todo supprimé (PUT /todos/restore/:id)**
 
 #### URL :
 ```
-PATCH http://127.0.0.1:3000/todos/1/restore
+PUT http://127.0.0.1:3000/todos/restore/1/
 ```
 
 #### Réponse attendue (Exemple) :
@@ -227,20 +227,14 @@ GET http://127.0.0.1:3000/todos/count-by-status
 
 ---
 
-### Résumé des points clés :
+### Résumé :
 
 - **POST** `/todos` : Créer un nouveau Todo.
 - **GET** `/todos` : Récupérer tous les Todos avec pagination.
 - **GET** `/todos/:id` : Récupérer un Todo par son ID.
 - **PUT** `/todos/:id` : Mettre à jour un Todo existant.
 - **DELETE** `/todos/:id` : Supprimer un Todo de façon soft.
-- **PATCH** `/todos/:id/restore` : Restaurer un Todo supprimé.
+- **PUT** `/todos/restore/:id` : Restaurer un Todo supprimé.
 - **GET** `/todos/filter` : Récupérer des Todos filtrés par `name`, `description` et `status`.
 - **GET** `/todos/status-count` : Obtenir le nombre de Todos pour chaque statut.
 
-### Remarques :
-
-- **Pagination** : Utilisez les paramètres `page` et `limit` pour contrôler la pagination des résultats dans les requêtes `GET /todos`.
-- **Paramètres optionnels** : Certains endpoints acceptent des paramètres optionnels, comme `name`, `description` et `status` pour la recherche et le filtrage des `Todos`.
-
-Vous pouvez maintenant utiliser ces requêtes Postman pour tester toutes les fonctionnalités de votre API Todo dans NestJS."# tp1nest" 
