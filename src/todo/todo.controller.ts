@@ -74,6 +74,14 @@ export class TodoController {
         return this.todoService.getAllTodos(page, limit);
     }
 
+    @Get('search')
+    async searchTodos(
+        @Query('text') searchTerm?: string,
+        @Query('status') status?: StatusEnum,
+    ) {
+        return await this.todoService.searchTodos(searchTerm, status);
+    }
+
     @Get(':id')
     async getTodoById(@Param('id') id: number) {
         try {
@@ -83,11 +91,5 @@ export class TodoController {
         }
     }
 
-    @Get('search')
-    async searchTodos(
-        @Query('searchTerm') searchTerm?: string,
-        @Query('status') status?: StatusEnum,
-    ) {
-        return await this.todoService.searchTodos(searchTerm, status);
-    }
+
 }
