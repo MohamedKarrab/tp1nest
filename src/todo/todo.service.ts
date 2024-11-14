@@ -13,9 +13,9 @@ export class TodoService {
         private todoRepository: Repository<TodoEntity>,
     ) {}
 
-    async addTodo(createTodoDto: CreateTodoDto): Promise<TodoEntity> {
-        const todo = this.todoRepository.create(createTodoDto);
-        return this.todoRepository.save(todo);  // saves dans le bd
+    async addTodo(createTodoDto: CreateTodoDto, userId: number): Promise<TodoEntity> {
+        const todo = this.todoRepository.create({ ...createTodoDto, userId });
+        return this.todoRepository.save(todo);
     }
 
     async updateTodo(id: number, updateTodoDto: UpdateTodoDto): Promise<TodoEntity> {

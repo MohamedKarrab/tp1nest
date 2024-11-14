@@ -1,48 +1,52 @@
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query} from '@nestjs/common';
-import {TodoService} from './todo.service';
-import {TodoEntity} from './entities/todo.entity';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, Req } from '@nestjs/common';
+import { TodoService } from './todo.service';
+import { TodoEntity } from './entities/todo.entity';
 import {CreateTodoDto} from "./dto/create-todo.tdo";
 import {UpdateTodoDto} from "./dto/update-todo.tdo";
-import {StatusEnum} from "./enums/status.enum";
+import { StatusEnum } from './enums/status.enum';
 
 @Controller('todos')
 export class TodoController {
     constructor(private readonly todoService: TodoService) {}
 
-    // V1
     @Post()
-    async addTodo(@Body() createTodoDto: CreateTodoDto): Promise<TodoEntity> {
-        return this.todoService.addTodo(createTodoDto);
+    async addTodo(
+        @Body() createTodoDto: CreateTodoDto,
+        @Req() req
+    ): Promise<TodoEntity> {
+        const userId = req.userId;
+        return this.todoService.addTodo(createTodoDto, userId);
     }
-
-    // V2 (Sans service)
-    // @Post()
-    // async addTodo(@Body() createTodoDto: CreateTodoDto): Promise<TodoEntity> {
-    //     // Crée ici instance de TodoEntity
-    //     const todo = this.todoRepository.create(createTodoDto);
-
-    //     return this.todoRepository.save(todo);
-    // }
 
     @Put(':id')
     async updateTodo(
         @Param('id') id: number,
         @Body() updateTodoDto: UpdateTodoDto,
+        @Req() req
     ): Promise<any> {
-        try {
-            return await this.todoService.updateTodo(id, updateTodoDto);
-        } catch (error) {
-            throw new NotFoundException(error.message);
+        const userId = req.userId;
+        const todo = await this.todoService.getTodoById(id);
+
+        if (todo.userId !== userId) {
+            throw new NotFoundException('Vous n\'êtes pas autorisé à modifier ce Todo.');
         }
+
+        return await this.todoService.updateTodo(id, updateTodoDto);
     }
 
     @Delete(':id')
-    async deleteTodo(@Param('id') id: number): Promise<void> {
-        try {
-            await this.todoService.deleteTodo(id);
-        } catch (error) {
-            throw new NotFoundException(error.message);
+    async deleteTodo(
+        @Param('id') id: number,
+        @Req() req
+    ): Promise<void> {
+        const userId = req.userId;
+        const todo = await this.todoService.getTodoById(id);
+
+        if (todo.userId !== userId) {
+            throw new NotFoundException('Vous n\'êtes pas autorisé à supprimer ce Todo.');
         }
+
+        await this.todoService.deleteTodo(id);
     }
 
     @Put('restore/:id')
@@ -59,13 +63,6 @@ export class TodoController {
         return await this.todoService.countTodosByStatus();
     }
 
-    // Without pagination
-    // @Get()
-    // async getAllTodos() {
-    //     return await this.todoService.getAllTodos();
-    // }
-
-    // With pagination
     @Get()
     async getAllTodos(
         @Query('page') page: number = 1,
@@ -90,6 +87,4 @@ export class TodoController {
             throw new NotFoundException(error.message);
         }
     }
-
-
 }
