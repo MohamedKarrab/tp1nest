@@ -7,6 +7,9 @@ import { TodoModule } from './todo/todo.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {TodoEntity} from "./todo/entities/todo.entity";
 import {ConfigModule, ConfigService} from "@nestjs/config";
+import { CvModule } from './cv/cv.module';
+import { SkillModule } from './skill/skill.module';
+import { UserModule } from './user/user.module';
 
 
 @Module({
@@ -21,7 +24,7 @@ import {ConfigModule, ConfigService} from "@nestjs/config";
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [TodoEntity],
+        entities: [TodoEntity, CvModule, SkillModule, UserModule],
         synchronize: true, // Only for devs
         logging: true,
       }),
@@ -29,6 +32,9 @@ import {ConfigModule, ConfigService} from "@nestjs/config";
     }),
     TodoModule,
     CommonModuleModule,
+    CvModule,
+    SkillModule,
+    UserModule,
   ],
   controllers: [AppController, TestController],
   providers: [AppService],
