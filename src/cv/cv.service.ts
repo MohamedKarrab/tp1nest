@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {Cv} from "./entities/cv.entity";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
@@ -11,7 +11,11 @@ export class CvService {
   ) {}
 
   async findAll(): Promise<Cv[]> {
-    return await this.cvRepository.find({ relations: ['user', 'skills'] });
+    const AllCvs = await this.cvRepository.find({ relations: ['user', 'skills'] });
+    if (!AllCvs){
+      throw new NotFoundException('No Cvs found');
+    }
+    return AllCvs;
   }
 
   async create(cv: Cv): Promise<Cv> {
@@ -19,17 +23,30 @@ export class CvService {
   }
 
   async findOne(id: number): Promise<Cv> {
-    return await this.cvRepository.findOne({
+    const cv = await this.cvRepository.findOne({
       where: { id },
-      relations: ['user', 'skills'],
     });
+    if (!cv ){
+      throw new NotFoundException('This Cv is not found');
+    }
+    return cv;
   }
 
   async update(id: number, cv: Cv): Promise<void> {
+    const cv1 = await this.cvRepository.findOne({
+      where: { id }, });
+    if (!cv1 ){
+      throw new NotFoundException('This Cv is not found');
+    }
     await this.cvRepository.update(id, cv);
   }
 
   async delete(id: number): Promise<void> {
+    const cv = await this.cvRepository.findOne({
+      where: { id }, });
+    if (!cv ){
+      throw new NotFoundException('This Cv is not found');
+    }
     await this.cvRepository.delete(id);
   }
 }
