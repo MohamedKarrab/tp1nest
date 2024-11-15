@@ -5,12 +5,14 @@ import { CommonModuleModule } from './common-module/common-module.module';
 import { TestController } from './test/test/test.controller';
 import { TodoModule } from './todo/todo.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import {TodoEntity} from "./todo/entities/todo.entity";
-import {ConfigModule, ConfigService} from "@nestjs/config";
+import { TodoEntity } from './todo/entities/todo.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CvModule } from './cv/cv.module';
 import { SkillModule } from './skill/skill.module';
 import { UserModule } from './user/user.module';
-
+import { Cv } from './cv/entities/cv.entity';
+import { Skill } from './skill/entities/skill.entity';
+import { User } from './user/entities/user.entity';
 
 @Module({
   imports: [
@@ -24,8 +26,8 @@ import { UserModule } from './user/user.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [TodoEntity, CvModule, SkillModule, UserModule],
-        synchronize: true, // Only for devs
+        entities: [TodoEntity, Cv, Skill, User], // Use entity classes, not modules
+        synchronize: true, // Enable for development only
         logging: true,
       }),
       inject: [ConfigService],
