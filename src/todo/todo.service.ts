@@ -18,7 +18,7 @@ export class TodoService {
         return this.todoRepository.save(todo);
     }
 
-    async updateTodo(id: number, updateTodoDto: UpdateTodoDto): Promise<TodoEntity> {
+    async updateTodo(id: number, updateTodoDto: UpdateTodoDto, userId: number): Promise<TodoEntity> {
 
         const todo = await this.todoRepository.findOne({
             where: { id },
@@ -26,11 +26,16 @@ export class TodoService {
         if (!todo) {
             throw new NotFoundException('Todo non trouvé');
         }
+
+        if (todo.userId !== userId) {
+            throw new NotFoundException('Vous n\'êtes pas autorisé à modifier ce Todo.');
+        }
+
         Object.assign(todo, updateTodoDto);
         return this.todoRepository.save(todo);
     }
 
-    async deleteTodo(id: number): Promise<void> {
+    async deleteTodo(id: number, userId: number): Promise<String> {
         const todo = await this.todoRepository.findOne({
             where: { id },
         });
@@ -39,12 +44,16 @@ export class TodoService {
             throw new NotFoundException('Todo non trouvé');
         }
 
+        if (todo.userId !== userId) {
+            throw new NotFoundException('Vous n\'êtes pas autorisé à supprimer ce Todo.');
+        }
         // hard delete
         // await this.todoRepository.remove(todo);
 
         // soft delete
         todo.deletedAt = new Date();
         await this.todoRepository.save(todo);
+        return "Todo Deleted!";
     }
 
     async restoreTodo(id: number): Promise<TodoEntity> {

@@ -25,13 +25,7 @@ export class TodoController {
         @Req() req
     ): Promise<any> {
         const userId = req.userId;
-        const todo = await this.todoService.getTodoById(id);
-
-        if (todo.userId !== userId) {
-            throw new NotFoundException('Vous n\'êtes pas autorisé à modifier ce Todo.');
-        }
-
-        return await this.todoService.updateTodo(id, updateTodoDto);
+        return await this.todoService.updateTodo(id, updateTodoDto, userId);
     }
 
     @Delete(':id')
@@ -40,13 +34,7 @@ export class TodoController {
         @Req() req
     ): Promise<void> {
         const userId = req.userId;
-        const todo = await this.todoService.getTodoById(id);
-
-        if (todo.userId !== userId) {
-            throw new NotFoundException('Vous n\'êtes pas autorisé à supprimer ce Todo.');
-        }
-
-        await this.todoService.deleteTodo(id);
+        await this.todoService.deleteTodo(id, userId);
     }
 
     @Put('restore/:id')
